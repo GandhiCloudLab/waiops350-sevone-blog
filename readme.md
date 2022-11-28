@@ -1,4 +1,4 @@
-# IBM Watson AIOps Integration with IBM SevOne with 
+# IBM Watson AIOps Integration with IBM SevOne 
 
 This article explains about Integrating IBM SevOne NPM with IBM Watson AIOps AI Manager 3.5.0 using SevOne Webhook Probe available in Watson AIOps.
 
@@ -120,7 +120,7 @@ This section explains about how to create and configure SevOne Policy in SevOne 
 
 ![SevOne](./images/image-00011.png)
 
-## 3.2. Create Clear Conditions
+### 3.2. Create Clear Conditions
 
 1. Choose `Clear Conditions` tab.
 
