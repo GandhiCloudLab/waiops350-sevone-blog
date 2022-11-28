@@ -1,0 +1,14 @@
+{
+      "SERIAL": 10001,
+      "EventId": "bookinfo-ratings-down",
+      "Node": "bookinfo-ratings",
+      "Severity": 4,
+      "Summary": "Ratings service is down and not reachable",
+      "NetcoolEventAction": "update",
+      "Type": 2,
+      "NodeAlias": "",
+      "Manager": "",
+      "Agent": "",
+      "AlertGroup": "",
+      "AlertKey": ""
+}
