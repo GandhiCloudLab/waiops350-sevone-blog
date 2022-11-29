@@ -13,9 +13,9 @@ install_main() {
 
   date1=$(date '+%Y-%m-%d %H:%M:%S')
   echo "******************************************************************************************"
-  echo " Generic Webhook creation with AI Manager started ....$date1"
+  echo " Probe integration for IBM SevOne Network Performance Management (NPM) with AI Manager Started ....$date1"
   echo "******************************************************************************************"
-  
+
   create_secrets
   create_subscription
 
@@ -32,7 +32,7 @@ install_main() {
   
   date1=$(date '+%Y-%m-%d %H:%M:%S')
   echo "******************************************************************************************"
-  echo " Generic Webhook creation with AI Manager completed ....$date1"
+  echo " Probe integration for IBM SevOne Network Performance Management (NPM) with AI Manager completed ....$date1"
   echo "******************************************************************************************"
 }
 

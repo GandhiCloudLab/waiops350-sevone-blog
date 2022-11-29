@@ -3,7 +3,7 @@
 function install_probe() {
 
 echo "-----------------------------------"
-echo "3.1 Gather AI Manager ObjectServer connection information ..."
+echo "2. Gather AI Manager ObjectServer connection information ..."
 echo "-----------------------------------"
 
 ### 1. Set the AI Manager namespace variable.
@@ -25,7 +25,7 @@ oc extract secret/$IRC_INSTANCE-ir-core-ncoprimary-tls -n $IRC_NAMESPACE --to=. 
 
 
 echo "-----------------------------------"
-echo "3.2 Create Secrets for ObjectServer credentials ."
+echo "3. Configure and Install Probe For SevOne Integration."
 echo "-----------------------------------"
 
 ### 1. Create a secret with the ObjectServer credentials for the probe to authenticate with the ObjectServer.
@@ -38,7 +38,7 @@ oc create secret generic $PROBE_AUTH_SECRET -n $IRC_NAMESPACE --from-literal=ser
 
 ### 3. Create a Network Policy in the IBM Cloud Pak Watson AI Ops namespace.
 echo "-----------------------------------"
-echo "3.3. Create a Network Policy ..."
+echo "1.2. Create a Network Policy ..."
 echo "-----------------------------------"
 
 cat << EOF | oc apply -f -
@@ -67,20 +67,20 @@ EOF
 
 ### 4. Create a Probe for SevOne Integrations with the WebhookProbe custom resource.
 echo "-----------------------------------"
-echo "3.4. Create a Probe for SevOne Integrations with the WebhookProbe custom resource ..."
+echo "3. Create a Probe for SevOne Integrations with the WebhookProbe custom resource ..."
 echo "-----------------------------------"
 
-PROBE_INSTANCE=$WEBHOOK_NAME
+PROBE_SEVONE_INSTANCE=sevone-probe
 
 cat << EOF | oc apply -f -
 apiVersion: probes.integrations.noi.ibm.com/v1
 kind: WebhookProbe
 metadata:
-  name: ${PROBE_INSTANCE}
+  name: ${PROBE_SEVONE_INSTANCE}
   labels:
-    app.kubernetes.io/name: ${PROBE_INSTANCE}
+    app.kubernetes.io/name: ${PROBE_SEVONE_INSTANCE}
     app.kubernetes.io/managed-by: netcool-integrations-operator
-    app.kubernetes.io/instance: ${PROBE_INSTANCE}
+    app.kubernetes.io/instance: ${PROBE_SEVONE_INSTANCE}
   namespace: ${NAMESPACE}
 spec:
   helmValues:
@@ -104,7 +104,6 @@ spec:
       integration: sevone
       enableTransportDebugLog: false
       messageLevel: debug
-      heartbeatInterval: 10
     ingress:
       enabled: true
       host: ''
@@ -119,6 +118,24 @@ spec:
     accept: true
   version: $PROBE_VERSION
 EOF
+
+sleep 15
+
+### 5. Verify that the probe pod is running.
+oc get pods -l app.kubernetes.io/instance=$PROBE_SEVONE_INSTANCE -n $IRC_NAMESPACE
+
+### 5.1. PATCH serviceaccount
+oc patch -n $IRC_NAMESPACE serviceaccount $PROBE_SEVONE_INSTANCE-mb-webhook-sa -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key-secret"}]}'
+
+
+echo "-----------------------------------"
+echo "4. Obtain the Probe Webhook URL"
+echo "-----------------------------------"
+### 1. probe webhook URL
+PROBE_HOSTNAME=$(oc get route $PROBE_SEVONE_INSTANCE-mb-webhook -n $IRC_NAMESPACE  -o jsonpath='{.spec.host}')
+PROBE_URI=$(oc get route $PROBE_SEVONE_INSTANCE-mb-webhook -n $IRC_NAMESPACE -o jsonpath='{.spec.path}')
+PROBE_WEBHOOK_URL=https://$PROBE_HOSTNAME$PROBE_URI
+echo "PROBE_WEBHOOK_URL -->: $PROBE_WEBHOOK_URL"
 
 rm tls.crt
 

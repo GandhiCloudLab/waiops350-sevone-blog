@@ -1,4 +1,4 @@
-# IBM Watson AIOps Integration with IBM SevOne 
+# IBM Watson AIOps 3.5 Integration with IBM SevOne 
 
 This article explains about Integrating IBM SevOne NPM with IBM Watson AIOps AI Manager 3.5.0 using SevOne Webhook Probe available in Watson AIOps.
 
